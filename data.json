@@ -1,6 +1,6 @@
 {
   "_meta": {
-    "lastUpdate": "2026-05-27T18:00:00-03:00",
+    "lastUpdate": "2026-05-27T19:00:00-03:00",
     "currency": "BRL",
     "account": "192-048-4711",
     "accountName": "Hospital Veterinário São Bernardo",
@@ -42,15 +42,15 @@
     { "nome": "[SEARCH] [CPC M] Hospital Veterinário Call 📞","tipo": "Search", "conv": 1.00,  "cpa": 169.67,  "custo": 169.98, "is": 55, "isLostBudget": 40, "status": "limited" }
   ],
   "diario": [
-    { "data": "2026-04-22", "conv": 8,  "custo": 95.20 },
-    { "data": "2026-04-23", "conv": 11, "custo": 108.60 },
-    { "data": "2026-04-24", "conv": 9,  "custo": 102.10 },
-    { "data": "2026-04-25", "conv": 7,  "custo": 88.40 },
-    { "data": "2026-04-26", "conv": 6,  "custo": 71.80 },
-    { "data": "2026-04-27", "conv": 8,  "custo": 89.55 },
-    { "data": "2026-04-28", "conv": 12, "custo": 119.30 },
-    { "data": "2026-04-29", "conv": 14, "custo": 125.85 },
-    { "data": "2026-04-30", "conv": 10, "custo": 112.40 },
+    { "data": "2026-04-22", "conv": 10, "custo": 108.00 },
+    { "data": "2026-04-23", "conv": 14, "custo": 123.00 },
+    { "data": "2026-04-24", "conv": 12, "custo": 116.00 },
+    { "data": "2026-04-25", "conv": 9,  "custo": 100.00 },
+    { "data": "2026-04-26", "conv": 8,  "custo": 81.00 },
+    { "data": "2026-04-27", "conv": 10, "custo": 101.00 },
+    { "data": "2026-04-28", "conv": 15, "custo": 135.00 },
+    { "data": "2026-04-29", "conv": 18, "custo": 143.00 },
+    { "data": "2026-04-30", "conv": 13, "custo": 127.53 },
     { "data": "2026-05-01", "conv": 11, "custo": 105.70 },
     { "data": "2026-05-02", "conv": 13, "custo": 118.20 },
     { "data": "2026-05-03", "conv": 9,  "custo": 96.40 },
