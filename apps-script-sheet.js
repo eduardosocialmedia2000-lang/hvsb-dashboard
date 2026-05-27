@@ -22,7 +22,7 @@
 // CONFIGURACAO — altere apenas este bloco
 // =============================================================
 
-const SHEET_ID = 'COLE_AQUI_O_ID_DA_PLANILHA';
+const SHEET_ID = '1ao1S84eBniYIvzdgNFQZ6poCIXFJkdtUZnlUIa6L9NQ';
 
 // Campos de saldo atualizados manualmente na aba "saldo"
 // (o Google Ads Script nao consegue ler saldo pre-pago pela API)
@@ -195,7 +195,7 @@ function seedData() {
   // --- kpis ---
   var sKpis = ss.getSheetByName('kpis');
   if (sKpis.getLastRow() > 1) sKpis.getRange(2, 1, sKpis.getLastRow() - 1, 2).clearContent();
-  sKpis.getRange(2, 1, 13, 2).setValues([
+  sKpis.getRange(2, 1, 12, 2).setValues([
     ['conversoesMTD',         390],
     ['conversoesMesAnterior', 281],
     ['custoMTD',              3145.47],

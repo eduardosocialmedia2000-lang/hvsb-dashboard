@@ -21,7 +21,7 @@
 // =============================================================
 
 // ID da Google Planilha (tudo entre /d/ e /edit na URL)
-const SPREADSHEET_ID = 'COLE_AQUI_O_ID_DA_PLANILHA';
+const SPREADSHEET_ID = '1ao1S84eBniYIvzdgNFQZ6poCIXFJkdtUZnlUIa6L9NQ';
 
 // Meta de conversoes: porcentagem sobre o mês anterior
 const META_PERCENT = 1.10; // +10%
