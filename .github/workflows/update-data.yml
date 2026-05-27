@@ -1,0 +1,53 @@
+name: Atualizar data.json
+
+on:
+  schedule:
+    # Roda às 04:30 BRT (07:30 UTC) — depois do Google Ads Script terminar às 04:00
+    - cron: '30 7 * * *'
+  workflow_dispatch: # permite rodar manualmente pelo GitHub
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Buscar dados do Apps Script
+        run: |
+          curl -sL "${{ secrets.APPS_SCRIPT_URL }}" \
+            --max-time 30 \
+            --retry 3 \
+            --retry-delay 5 \
+            -o data_new.json
+
+      - name: Validar JSON
+        run: |
+          # Garante que o arquivo é um JSON válido e tem as chaves esperadas
+          python3 -c "
+          import json, sys
+          with open('data_new.json') as f:
+              d = json.load(f)
+          required = ['kpis', 'campanhas', 'diario', 'mes']
+          missing = [k for k in required if k not in d]
+          if missing:
+              print('ERRO: chaves faltando:', missing)
+              sys.exit(1)
+          conv = d['kpis'].get('conversoesMTD', 0)
+          print(f'OK — conversoesMTD={conv}, campanhas={len(d[\"campanhas\"])}, dias={len(d[\"diario\"])}')
+          "
+
+      - name: Substituir data.json
+        run: mv data_new.json data.json
+
+      - name: Commit e push
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data.json
+          # Só commita se houver mudança
+          git diff --cached --quiet && echo "Sem mudancas, nada a commitar." || \
+            git commit -m "chore: atualizar data.json [$(date -u '+%Y-%m-%d %H:%M UTC')]"
+          git push
