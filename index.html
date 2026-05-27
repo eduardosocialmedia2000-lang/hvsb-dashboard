@@ -705,25 +705,24 @@ const DATA_URL = 'https://script.google.com/macros/s/AKfycbxrWlOdQSTwmP0C-r_Z-yp
 
 async function loadData() {
   try {
-    const res = await fetch(DATA_URL + '?t=' + Date.now());
+    // Fonte primária: data.json versionado no repositório
+    const res = await fetch('data.json?t=' + Date.now());
     const data = await res.json();
-
-    // Normalizar datas do diario (vêm como ISO da Sheet)
-    if (data.diario) {
-      data.diario.forEach(d => {
-        if (d.data && typeof d.data === 'string' && d.data.includes('T')) {
-          d.data = d.data.split('T')[0];
-        }
-      });
-    }
-
     render(data);
   } catch (err) {
     console.error('Erro ao carregar dados:', err);
-    // Fallback pro data.json local em caso de falha de rede
+    // Fallback: Apps Script / Sheet
     try {
-      const res = await fetch('data.json?t=' + Date.now());
-      render(await res.json());
+      const res = await fetch(DATA_URL + '?t=' + Date.now());
+      const data = await res.json();
+      if (data.diario) {
+        data.diario.forEach(d => {
+          if (d.data && typeof d.data === 'string' && d.data.includes('T')) {
+            d.data = d.data.split('T')[0];
+          }
+        });
+      }
+      render(data);
     } catch (e) { /* silent */ }
   }
 }
