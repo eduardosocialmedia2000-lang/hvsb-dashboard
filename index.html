@@ -293,7 +293,7 @@ footer.foot {
       </div>
     </div>
     <div class="update-info">
-      <div class="label">Última atualização</div>
+      <div class="label">Ao vivo · refresh 60s</div>
       <div class="value"><span class="pulse"></span><span id="last-update">—</span></div>
     </div>
   </header>
@@ -700,21 +700,39 @@ function renderCampanhas(campanhas) {
 }
 
 // ============== LOAD + REFRESH ==============
+// Web App URL do Apps Script (Sheet → JSON ao vivo)
+const DATA_URL = 'https://script.google.com/macros/s/AKfycbxrWlOdQSTwmP0C-r_Z-ypqGETCE36xEkaj1CYzjrInHrr9envKkcuxzzSHHYOcIvgr/exec';
+
 async function loadData() {
   try {
-    const res = await fetch('data.json?t=' + Date.now());
+    const res = await fetch(DATA_URL + '?t=' + Date.now());
     const data = await res.json();
+
+    // Normalizar datas do diario (vêm como ISO da Sheet)
+    if (data.diario) {
+      data.diario.forEach(d => {
+        if (d.data && typeof d.data === 'string' && d.data.includes('T')) {
+          d.data = d.data.split('T')[0];
+        }
+      });
+    }
+
     render(data);
   } catch (err) {
-    console.error('Erro ao carregar data.json:', err);
+    console.error('Erro ao carregar dados:', err);
+    // Fallback pro data.json local em caso de falha de rede
+    try {
+      const res = await fetch('data.json?t=' + Date.now());
+      render(await res.json());
+    } catch (e) { /* silent */ }
   }
 }
 
 // Initial load
 loadData();
 
-// Refresh a cada 5 minutos
-setInterval(loadData, 5 * 60 * 1000);
+// Refresh a cada 60 segundos (quase real-time)
+setInterval(loadData, 60 * 1000);
 </script>
 
 </body>
