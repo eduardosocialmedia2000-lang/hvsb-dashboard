@@ -9,10 +9,10 @@
     "note": "KPIs e campanhas: dados reais CSV Google Ads (1-27/mai). Diário 1-21/mai: estimativa proporcional; 22-27/mai: distribuição dos totais remanescentes."
   },
   "saldo": {
-    "atual": null,
+    "atual": 1849.68,
     "gastoMedio7d": 117.30,
-    "ultimaRecarga": "2026-05-12",
-    "ultimaRecargaValor": 3000.00
+    "ultimaRecarga": "2026-05-26",
+    "ultimaRecargaValor": 2000.00
   },
   "mes": {
     "ano": 2026,
