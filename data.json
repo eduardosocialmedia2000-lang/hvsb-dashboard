@@ -1,0 +1,81 @@
+{
+  "_meta": {
+    "lastUpdate": "2026-05-21T16:00:00-03:00",
+    "currency": "BRL",
+    "account": "192-048-4711",
+    "accountName": "Hospital Veterinário São Bernardo",
+    "city": "Curitiba/PR",
+    "source": "manual-seed"
+  },
+  "saldo": {
+    "atual": 1850.00,
+    "gastoMedio7d": 117.50,
+    "ultimaRecarga": "2026-05-12",
+    "ultimaRecargaValor": 3000.00
+  },
+  "mes": {
+    "ano": 2026,
+    "mes": 5,
+    "diasDoMes": 31,
+    "diasDecorridos": 21,
+    "meta": 310,
+    "metaOrigem": "Abril 281 conv + 10%"
+  },
+  "kpis": {
+    "conversoesMTD": 308,
+    "conversoesMesAnterior": 281,
+    "custoMTD": 2480.00,
+    "custoMesAnterior": 3070.00,
+    "cpaMTD": 8.07,
+    "cpaMesAnterior": 10.91,
+    "cliquesMTD": 2060,
+    "cliquesMesAnterior": 2970
+  },
+  "campanhas": [
+    { "nome": "Especialidades · Search", "tipo": "Search", "conv": 84, "cpa": 6.42, "custo": 539.28, "is": 38, "isLostBudget": 52, "status": "limited" },
+    { "nome": "Hospital Vet · Search", "tipo": "Search", "conv": 62, "cpa": 9.85, "custo": 610.70, "is": 41, "isLostBudget": 47, "status": "limited" },
+    { "nome": "Emergência 24h · Search", "tipo": "Search", "conv": 58, "cpa": 7.21, "custo": 418.18, "is": 33, "isLostBudget": 58, "status": "limited" },
+    { "nome": "Branding HVSB · Search", "tipo": "Search", "conv": 42, "cpa": 4.18, "custo": 175.56, "is": 88, "isLostBudget": 7, "status": "ok" },
+    { "nome": "PMax Geral", "tipo": "PMax", "conv": 31, "cpa": 11.40, "custo": 353.40, "is": 0, "isLostBudget": 38, "status": "limited" },
+    { "nome": "PMax Maps", "tipo": "PMax", "conv": 18, "cpa": 9.85, "custo": 177.30, "is": 0, "isLostBudget": 22, "status": "limited" },
+    { "nome": "Display Remarketing", "tipo": "Display", "conv": 13, "cpa": 3.05, "custo": 39.65, "is": 0, "isLostBudget": 18, "status": "limited" }
+  ],
+  "diario": [
+    { "data": "2026-04-22", "conv": 8,  "custo": 95.20 },
+    { "data": "2026-04-23", "conv": 11, "custo": 108.60 },
+    { "data": "2026-04-24", "conv": 9,  "custo": 102.10 },
+    { "data": "2026-04-25", "conv": 7,  "custo": 88.40 },
+    { "data": "2026-04-26", "conv": 6,  "custo": 71.80 },
+    { "data": "2026-04-27", "conv": 8,  "custo": 89.55 },
+    { "data": "2026-04-28", "conv": 12, "custo": 119.30 },
+    { "data": "2026-04-29", "conv": 14, "custo": 125.85 },
+    { "data": "2026-04-30", "conv": 10, "custo": 112.40 },
+    { "data": "2026-05-01", "conv": 11, "custo": 105.70 },
+    { "data": "2026-05-02", "conv": 13, "custo": 118.20 },
+    { "data": "2026-05-03", "conv": 9,  "custo": 96.40 },
+    { "data": "2026-05-04", "conv": 8,  "custo": 87.10 },
+    { "data": "2026-05-05", "conv": 14, "custo": 122.30 },
+    { "data": "2026-05-06", "conv": 16, "custo": 130.55 },
+    { "data": "2026-05-07", "conv": 15, "custo": 128.40 },
+    { "data": "2026-05-08", "conv": 17, "custo": 133.20 },
+    { "data": "2026-05-09", "conv": 12, "custo": 110.85 },
+    { "data": "2026-05-10", "conv": 10, "custo": 99.30 },
+    { "data": "2026-05-11", "conv": 18, "custo": 138.20 },
+    { "data": "2026-05-12", "conv": 19, "custo": 142.55 },
+    { "data": "2026-05-13", "conv": 16, "custo": 130.80 },
+    { "data": "2026-05-14", "conv": 14, "custo": 121.40 },
+    { "data": "2026-05-15", "conv": 17, "custo": 134.20 },
+    { "data": "2026-05-16", "conv": 15, "custo": 128.55 },
+    { "data": "2026-05-17", "conv": 11, "custo": 104.30 },
+    { "data": "2026-05-18", "conv": 13, "custo": 112.80 },
+    { "data": "2026-05-19", "conv": 18, "custo": 139.40 },
+    { "data": "2026-05-20", "conv": 21, "custo": 152.20 },
+    { "data": "2026-05-21", "conv": 17, "custo": 133.55 }
+  ],
+  "conversoesPorTipo": {
+    "whatsapp": 187,
+    "ligacao": 89,
+    "rota": 32
+  },
+  "searchIS": 48
+}
