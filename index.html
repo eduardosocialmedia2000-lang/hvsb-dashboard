@@ -259,6 +259,27 @@ header.topbar {
 .pizza-leg-item .dot { width: 10px; height: 10px; border-radius: 50%; }
 .pizza-leg-item .val { font-family: 'Montserrat', sans-serif; font-weight: 800; color: var(--white); }
 
+/* PERIOD SELECTOR */
+.period-bar {
+  display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center;
+  margin-bottom: 1.2rem;
+}
+.period-btn {
+  background: rgba(169,214,232,0.07);
+  border: 1px solid rgba(169,214,232,0.18);
+  color: rgba(255,255,255,0.55);
+  padding: 0.3rem 0.85rem;
+  border-radius: 20px;
+  font-family: 'Inter', sans-serif; font-size: 0.75rem; font-weight: 600;
+  cursor: pointer; transition: all 0.18s; letter-spacing: 0.04em;
+}
+.period-btn:hover { border-color: rgba(169,214,232,0.45); color: rgba(255,255,255,0.9); }
+.period-btn.active { background: var(--blue); border-color: var(--blue-light); color: white; }
+.period-range-label {
+  font-size: 0.72rem; color: var(--gray-dim); margin-left: 0.3rem;
+  font-style: italic;
+}
+
 /* FOOTER */
 footer.foot {
   text-align: center; padding: 1.5rem 0 0.5rem;
@@ -302,6 +323,17 @@ footer.foot {
   <div class="alert-banner" id="alert-banner">
     <div class="icon">⚠️</div>
     <div class="msg" id="alert-msg"></div>
+  </div>
+
+  <!-- PERIOD SELECTOR -->
+  <div class="period-bar">
+    <button class="period-btn active" data-days="0">Mês atual</button>
+    <button class="period-btn" data-days="7">7d</button>
+    <button class="period-btn" data-days="14">14d</button>
+    <button class="period-btn" data-days="30">30d</button>
+    <button class="period-btn" data-days="90">90d</button>
+    <button class="period-btn" data-days="-1">Máx</button>
+    <span class="period-range-label" id="period-range-label"></span>
   </div>
 
   <!-- KPIS -->
@@ -384,7 +416,10 @@ footer.foot {
   <div class="card">
     <div class="card-head">
       <h2>Ranking de campanhas</h2>
-      <div class="badge">Ordenado por conversões</div>
+      <div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;">
+        <div class="badge" id="camp-period-badge">—</div>
+        <div class="badge" style="background:rgba(255,255,255,0.05);color:var(--gray-dim);">Ordenado por conversões</div>
+      </div>
     </div>
     <div class="tbl-wrap">
       <table class="tbl">
@@ -438,9 +473,85 @@ const formatDateFuture = (daysFromNow) => {
 
 // ============== STATE ==============
 let chartTrend, chartPizza;
+let _data = null;
+let _currentDays = 0; // 0 = mês atual MTD, -1 = máx, N = últimos N dias
+
+// ============== PERIOD UTILS ==============
+function getPeriodDiario(diario, days) {
+  if (days === -1) return diario;
+  if (days === 0) {
+    // Apenas dias do mês atual
+    const now = new Date();
+    const ym = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+    return diario.filter(d => d.data.startsWith(ym));
+  }
+  return diario.slice(-days);
+}
+
+function calcKpisFromDiario(diario) {
+  const conv = diario.reduce((s, d) => s + (d.conv || 0), 0);
+  const custo = diario.reduce((s, d) => s + (d.custo || 0), 0);
+  return { conv, custo, cpa: conv > 0 ? custo / conv : 0 };
+}
+
+function fmtDateRange(diario) {
+  if (!diario.length) return '';
+  const ini = diario[0].data.split('-');
+  const fim = diario[diario.length-1].data.split('-');
+  const fmt = d => `${d[2]}/${d[1]}`;
+  return `${fmt(ini)} – ${fmt(fim)}`;
+}
+
+function applyPeriod(days) {
+  if (!_data) return;
+  _currentDays = days;
+
+  // Atualizar botões ativos
+  document.querySelectorAll('.period-btn').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.days) === days);
+  });
+
+  const filtered = getPeriodDiario(_data.diario, days);
+  const range = fmtDateRange(filtered);
+  document.getElementById('period-range-label').textContent = range ? `· ${range}` : '';
+
+  // Badge na tabela de campanhas
+  const campBadge = document.getElementById('camp-period-badge');
+  if (days === 0) {
+    const now = new Date();
+    campBadge.textContent = now.toLocaleString('pt-BR', { month: 'long' }).replace(/^\w/, c => c.toUpperCase()) + ` · ${range}`;
+  } else if (days === -1) {
+    campBadge.textContent = `Período máximo · ${range}`;
+  } else {
+    campBadge.textContent = `Últimos ${days} dias · ${range}`;
+  }
+
+  // Atualizar gráfico
+  renderTrend(filtered);
+
+  // Atualizar KPIs de conversão/custo/cpa se período != mês atual
+  if (days !== 0) {
+    const kpis = calcKpisFromDiario(filtered);
+    document.getElementById('kpi-conv').textContent = fmtInt(kpis.conv);
+    document.getElementById('kpi-cpa').textContent = fmtMoney(kpis.cpa);
+    document.getElementById('kpi-custo').textContent = fmtMoneyK(kpis.custo);
+    // Limpar deltas (não fazem sentido fora do MTD)
+    document.getElementById('kpi-conv-delta').innerHTML = `<span style="color:var(--gray-dim);font-size:0.72rem;">${range}</span>`;
+    document.getElementById('kpi-cpa-delta').innerHTML = '';
+    document.getElementById('kpi-custo-delta').innerHTML = '';
+    // Limpar projeção
+    document.getElementById('kpi-projecao').textContent = '—';
+    document.getElementById('kpi-projecao-sub').innerHTML = `<span style="color:var(--gray-dim);font-size:0.72rem;">Projeção só no mês atual</span>`;
+  } else {
+    // Restaurar KPIs MTD completos
+    renderKpisPeriod(_data);
+  }
+}
 
 // ============== RENDER ==============
 function render(data) {
+  _data = data;
+
   // ----- Update info -----
   document.getElementById('last-update').textContent = formatDateBR(data._meta.lastUpdate);
 
@@ -487,6 +598,31 @@ function render(data) {
     banner.classList.remove('show');
   }
 
+  // ----- META BAR (sempre MTD) -----
+  const pctMeta = Math.min(100, (data.kpis.conversoesMTD / data.mes.meta) * 100);
+  document.getElementById('meta-atingido').textContent = fmtInt(data.kpis.conversoesMTD);
+  document.getElementById('meta-total').textContent = data.mes.meta;
+  document.getElementById('meta-bar').style.width = pctMeta + '%';
+  document.getElementById('meta-pct').textContent = pctMeta.toFixed(1) + '%';
+  document.getElementById('meta-origem').textContent = data.mes.metaOrigem;
+  const projConvMeta = (data.kpis.conversoesMTD / data.mes.diasDecorridos) * data.mes.diasDoMes;
+  const projVsMeta = projConvMeta >= data.mes.meta;
+  document.getElementById('meta-projecao').className = `val ${projVsMeta ? 'green' : 'red'}`;
+  document.getElementById('meta-projecao').textContent = projVsMeta
+    ? `✓ Sim (~${fmtInt(projConvMeta)})`
+    : `Risco (~${fmtInt(projConvMeta)})`;
+
+  // ----- PIZZA -----
+  renderPizza(data.conversoesPorTipo);
+
+  // ----- TABELA DE CAMPANHAS -----
+  renderCampanhas(data.campanhas);
+
+  // ----- Aplicar período atual (KPIs + chart) -----
+  applyPeriod(_currentDays);
+}
+
+function renderKpisPeriod(data) {
   // ----- KPI Conversões -----
   document.getElementById('kpi-conv').textContent = fmtInt(data.kpis.conversoesMTD);
   const convDelta = fmtPct(data.kpis.conversoesMTD, data.kpis.conversoesMesAnterior);
@@ -498,7 +634,7 @@ function render(data) {
   // ----- KPI CPA -----
   document.getElementById('kpi-cpa').textContent = fmtMoney(data.kpis.cpaMTD);
   const cpaDelta = fmtPct(data.kpis.cpaMTD, data.kpis.cpaMesAnterior);
-  const cpaDown = data.kpis.cpaMTD <= data.kpis.cpaMesAnterior; // menor = melhor
+  const cpaDown = data.kpis.cpaMTD <= data.kpis.cpaMesAnterior;
   document.getElementById('kpi-cpa-delta').className = `delta ${cpaDown ? 'up' : 'down'}`;
   document.getElementById('kpi-cpa-delta').innerHTML =
     `<span class="arrow">${cpaDown ? '▼' : '▲'}</span> ${cpaDelta} vs. mês anterior`;
@@ -517,27 +653,6 @@ function render(data) {
   document.getElementById('kpi-projecao-sub').innerHTML = projVsMeta
     ? `<span class="arrow">✓</span> Vai bater a meta de ${data.mes.meta}`
     : `<span class="arrow">✗</span> Abaixo da meta de ${data.mes.meta}`;
-
-  // ----- META BAR -----
-  const pctMeta = Math.min(100, (data.kpis.conversoesMTD / data.mes.meta) * 100);
-  document.getElementById('meta-atingido').textContent = fmtInt(data.kpis.conversoesMTD);
-  document.getElementById('meta-total').textContent = data.mes.meta;
-  document.getElementById('meta-bar').style.width = pctMeta + '%';
-  document.getElementById('meta-pct').textContent = pctMeta.toFixed(1) + '%';
-  document.getElementById('meta-origem').textContent = data.mes.metaOrigem;
-  document.getElementById('meta-projecao').className = `val ${projVsMeta ? 'green' : 'red'}`;
-  document.getElementById('meta-projecao').textContent = projVsMeta
-    ? `✓ Sim (~${fmtInt(projConv)})`
-    : `Risco (~${fmtInt(projConv)})`;
-
-  // ----- GRÁFICO DE TENDÊNCIA -----
-  renderTrend(data.diario);
-
-  // ----- PIZZA -----
-  renderPizza(data.conversoesPorTipo);
-
-  // ----- TABELA DE CAMPANHAS -----
-  renderCampanhas(data.campanhas);
 }
 
 function renderTrend(diario) {
@@ -726,6 +841,11 @@ async function loadData() {
     } catch (e) { /* silent */ }
   }
 }
+
+// Period buttons
+document.querySelectorAll('.period-btn').forEach(btn => {
+  btn.addEventListener('click', () => applyPeriod(parseInt(btn.dataset.days)));
+});
 
 // Initial load
 loadData();
