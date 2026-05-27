@@ -445,36 +445,36 @@ function render(data) {
   document.getElementById('last-update').textContent = formatDateBR(data._meta.lastUpdate);
 
   // ----- KPI Saldo -----
-  document.getElementById('kpi-saldo').textContent = fmtMoneyK(data.saldo.atual);
+  document.getElementById('kpi-saldo').textContent = data.saldo.atual != null ? fmtMoneyK(data.saldo.atual) : '—';
   document.getElementById('kpi-saldo-sub').innerHTML =
     `Gasto médio 7d: <strong>${fmtMoney(data.saldo.gastoMedio7d)}</strong>/dia`;
 
   // ----- KPI Dias de saldo -----
-  const diasSaldo = data.saldo.atual / data.saldo.gastoMedio7d;
+  const diasSaldo = data.saldo.atual != null ? data.saldo.atual / data.saldo.gastoMedio7d : null;
   const diasSaldoCard = document.getElementById('kpi-dias-card');
   const diasEl = document.getElementById('kpi-dias');
   const diasSubEl = document.getElementById('kpi-dias-sub');
-  diasEl.innerHTML = `${Math.floor(diasSaldo)}<span class="unit">dias</span>`;
+  diasEl.innerHTML = diasSaldo != null ? `${Math.floor(diasSaldo)}<span class="unit">dias</span>` : `—<span class="unit">dias</span>`;
   diasSaldoCard.classList.remove('warn', 'danger');
 
   let alertLevel = 'ok';
   let alertMsg = '';
-  if (diasSaldo <= 1) {
+  if (diasSaldo != null && diasSaldo <= 1) {
     alertLevel = 'critical';
     diasSaldoCard.classList.add('danger');
     diasSubEl.innerHTML = `<span style="color:var(--red-light); font-weight:700;">🚨 Conta vai pausar hoje</span>`;
     alertMsg = `<strong>SALDO CRÍTICO:</strong> Conta vai pausar HOJE. Recarregar imediatamente para não perder pacientes.`;
-  } else if (diasSaldo <= 3) {
+  } else if (diasSaldo != null && diasSaldo <= 3) {
     alertLevel = 'urgent';
     diasSaldoCard.classList.add('danger');
     diasSubEl.innerHTML = `<span style="color:var(--red-light); font-weight:700;">Conta pausa em ${formatDateFuture(diasSaldo)}</span>`;
     alertMsg = `<strong>URGENTE:</strong> Saldo acaba em ${Math.floor(diasSaldo)} dias. Conta pausa em <strong>${formatDateFuture(diasSaldo)}</strong>.`;
-  } else if (diasSaldo <= 7) {
+  } else if (diasSaldo != null && diasSaldo <= 7) {
     alertLevel = 'warn';
     diasSaldoCard.classList.add('warn');
     diasSubEl.innerHTML = `<span style="color:var(--gold-light); font-weight:700;">Programar recarga até ${formatDateFuture(diasSaldo - 2)}</span>`;
   } else {
-    diasSubEl.innerHTML = `<span style="color:var(--green-light); font-weight:600;">Saldo OK</span>`;
+    diasSubEl.innerHTML = diasSaldo != null ? `<span style="color:var(--green-light); font-weight:600;">Saldo OK</span>` : `<span style="color:var(--text-muted);">Verificar no Google Ads</span>`;
   }
 
   // Banner crítico
