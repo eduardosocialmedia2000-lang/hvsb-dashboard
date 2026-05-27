@@ -314,7 +314,7 @@ footer.foot {
       </div>
     </div>
     <div class="update-info">
-      <div class="label">Ao vivo · refresh 60s</div>
+      <div class="label" id="live-badge">● AO VIVO · carregando...</div>
       <div class="value"><span class="pulse"></span><span id="last-update">—</span></div>
     </div>
   </header>
@@ -818,27 +818,49 @@ function renderCampanhas(campanhas) {
 // Web App URL do Apps Script (Sheet → JSON ao vivo)
 const DATA_URL = 'https://script.google.com/macros/s/AKfycbxrWlOdQSTwmP0C-r_Z-ypqGETCE36xEkaj1CYzjrInHrr9envKkcuxzzSHHYOcIvgr/exec';
 
+function normalizeDiario(data) {
+  if (data.diario) {
+    data.diario.forEach(d => {
+      if (d.data && typeof d.data === 'string' && d.data.includes('T')) {
+        d.data = d.data.split('T')[0];
+      }
+    });
+  }
+  return data;
+}
+
+function markLiveUpdate(source) {
+  const now = new Date();
+  const hhmm = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const el = document.getElementById('live-badge');
+  if (el) {
+    el.textContent = `● AO VIVO · atualizado ${hhmm}`;
+    el.title = `Fonte: ${source} · ${now.toLocaleString('pt-BR')}`;
+  }
+}
+
 async function loadData() {
-  try {
-    // Fonte primária: data.json versionado no repositório
-    const res = await fetch('data.json?t=' + Date.now());
-    const data = await res.json();
-    render(data);
-  } catch (err) {
-    console.error('Erro ao carregar dados:', err);
-    // Fallback: Apps Script / Sheet
+  // Fonte primária: Apps Script (Sheet ao vivo)
+  if (DATA_URL && !DATA_URL.includes('COLE_AQUI')) {
     try {
       const res = await fetch(DATA_URL + '?t=' + Date.now());
-      const data = await res.json();
-      if (data.diario) {
-        data.diario.forEach(d => {
-          if (d.data && typeof d.data === 'string' && d.data.includes('T')) {
-            d.data = d.data.split('T')[0];
-          }
-        });
+      const data = normalizeDiario(await res.json());
+      if (data.kpis || data.diario) {
+        render(data);
+        markLiveUpdate('Apps Script');
+        return;
       }
-      render(data);
-    } catch (e) { /* silent */ }
+    } catch (e) { /* fallback */ }
+  }
+
+  // Fallback: data.json estático do repositório
+  try {
+    const res = await fetch('data.json?t=' + Date.now());
+    const data = normalizeDiario(await res.json());
+    render(data);
+    markLiveUpdate('data.json');
+  } catch (err) {
+    console.error('Erro ao carregar dados:', err);
   }
 }
 
@@ -850,8 +872,8 @@ document.querySelectorAll('.period-btn').forEach(btn => {
 // Initial load
 loadData();
 
-// Refresh a cada 60 segundos (quase real-time)
-setInterval(loadData, 60 * 1000);
+// Refresh a cada 15 minutos (Google Ads Script atualiza de hora em hora)
+setInterval(loadData, 15 * 60 * 1000);
 </script>
 
 </body>
