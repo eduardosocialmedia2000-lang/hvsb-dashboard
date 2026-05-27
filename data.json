@@ -33,13 +33,13 @@
     "cliquesMesAnterior": 2970
   },
   "campanhas": [
-    { "nome": "Especialidades · Search", "tipo": "Search", "conv": 91.98, "cpa": 9.21, "custo": 847.20, "is": 38, "isLostBudget": 52, "status": "limited" },
-    { "nome": "Hospital Vet · Search",   "tipo": "Search", "conv": 57.85, "cpa": 11.94, "custo": 690.98, "is": 41, "isLostBudget": 47, "status": "limited" },
-    { "nome": "Display Remarketing",     "tipo": "Display", "conv": 115.00, "cpa": 3.84, "custo": 441.56, "is": 0, "isLostBudget": 18, "status": "limited" },
-    { "nome": "[MAX Q] Domicílio",        "tipo": "PMax",   "conv": 43.50, "cpa": 13.70, "custo": 595.86, "is": 0, "isLostBudget": 38, "status": "limited" },
-    { "nome": "Branding HVSB · Search",  "tipo": "Search", "conv": 65.99, "cpa": 4.00,  "custo": 264.10, "is": 88, "isLostBudget": 7, "status": "ok" },
-    { "nome": "Institucional · Search",  "tipo": "Search", "conv": 14.67, "cpa": 9.26,  "custo": 135.78, "is": 60, "isLostBudget": 30, "status": "limited" },
-    { "nome": "Call 📞",                  "tipo": "Search", "conv": 1.00,  "cpa": 169.67,"custo": 169.98, "is": 55, "isLostBudget": 40, "status": "limited" }
+    { "nome": "[SEARCH] [CPC M] Especialidades Veterinárias", "tipo": "Search", "conv": 91.98, "cpa": 9.21,   "custo": 847.20, "is": 38, "isLostBudget": 52, "status": "limited" },
+    { "nome": "[SEARCH] [CPC M] Hospital Veterinário",        "tipo": "Search", "conv": 57.85, "cpa": 11.94,  "custo": 690.98, "is": 41, "isLostBudget": 47, "status": "limited" },
+    { "nome": "Display | Remarketing | Leads - HVSB",         "tipo": "Display","conv": 115.00, "cpa": 3.84,  "custo": 441.56, "is": 0,  "isLostBudget": 18, "status": "limited" },
+    { "nome": "[SEARCH] [MAX Q] Domicílio",                   "tipo": "Search", "conv": 43.50, "cpa": 13.70,  "custo": 595.86, "is": 0,  "isLostBudget": 38, "status": "limited" },
+    { "nome": "[SEARCH] [CPC M] Branding",                    "tipo": "Search", "conv": 65.99, "cpa": 4.00,   "custo": 264.10, "is": 88, "isLostBudget": 7,  "status": "ok" },
+    { "nome": "[SEARCH] [SITE] Institucional | HVSB",         "tipo": "Search", "conv": 14.67, "cpa": 9.26,   "custo": 135.78, "is": 60, "isLostBudget": 30, "status": "limited" },
+    { "nome": "[SEARCH] [CPC M] Hospital Veterinário Call 📞","tipo": "Search", "conv": 1.00,  "cpa": 169.67,  "custo": 169.98, "is": 55, "isLostBudget": 40, "status": "limited" }
   ],
   "diario": [
     { "data": "2026-04-22", "conv": 8,  "custo": 95.20 },
